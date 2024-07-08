@@ -1,4 +1,4 @@
-@echo off
+#! /bin/bash
 
-cls
+clear
 node build/build.js

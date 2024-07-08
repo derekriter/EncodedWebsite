@@ -1,41 +1,63 @@
-const fs = require("fs");
+const fse = require("fs-extra");
+const path = require("path");
 
-var files = getBuildFiles();
+const outDir = path.join(__dirname, "../out");
+const targets = getBuildFiles();
 
-console.log("Building Files:");
-files.forEach((file) => console.log(file));
+prepOutFolder();
 
-for(let i = 0; i < files.length; i++) {
-	let file = files[i];
+console.log("Building...");
+for(let i = 0; i < targets.length; i++) {
+	let file = path.join(__dirname, "../src", targets[i]);
+	const err = compileFile(file);
 	
-	
+	if(err) console.log(`Failed to build ${file}`);
+	else console.log(`Built '${file}'`);
 }
+
+console.log("\nInserting loader...");
+insertLoader();
+
+console.log("\nDone");
 
 function getBuildFiles() {
 	try {
-		const data = fs.readFileSync("./build/buildTargets.txt", "utf8");
+		const data = fse.readFileSync(path.join(__dirname, "buildTargets.txt"), "utf8");
+		if(data.replace(/\s/gi, "") === "") { //remove all whitespace
+			abort("No build targets");
+		}
+		
+		let lines = data.split("\n");
 		
 		let targets = [];
-		let line = "";
-		for(var i = 0; i < data.length; i++) {
-			var c = data.charAt(i);
+		for(let i = 0; i < lines.length; i++) {
+			let line = lines[i].trim();
 			
-			if(c == "\n") {
-				targets.push(line);
-				line =  "";
-			}
-			else line += c;
+			if(line === "") continue;
+			else targets.push(line);
 		}
-		targets.push(line);
 		
 		return targets;
 	}
 	catch(err) {abort(err);}
 }
+function prepOutFolder() {
+	fse.emptyDirSync(outDir); //will create dir if doesn't exist or empty it
+}
+function compileFile(file) {
+	const data = fse.readFileSync(file, "utf8");
+	
+	let extension = path.extname(file);
+	let base = path.basename(file);
+	let filename = base.substring(0, base.lastIndexOf(extension)).concat(".enc").concat(extension);
+	
+	fse.writeFileSync(path.join(outDir, filename), btoa(data));
+}
+function insertLoader() {
+	fse.copyFileSync(path.join(__dirname, "loader.html"), path.join(outDir, "/index.html"));
+}
+
 function abort(err) {
 	console.log(err);
 	process.exit(1);
-}
-function setCursorPos(line, column) {
-	console.log(`\033[<${line}>;<${column}>H`);
 }

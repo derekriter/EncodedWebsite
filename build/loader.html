@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Loading...</title>
+    </head>
+    <body>
+        <script>
+            async function getFile(name) {
+                try {
+                    const response = await fetch(name, {method: "GET"});
+                    if(!response.ok) throw new Error(`Response status: ${response.status}`);
+                    
+                    return response.text();
+                }
+                catch(err) {console.log(err);}
+            }
+            
+            getFile("index.enc.html").then((raw) => {
+                let file = atob(raw);
+                let parser = new DOMParser();
+                
+                let proc = parser.parseFromString(file, "text/html");
+                document.head.outerHTML = proc.head.outerHTML;
+                document.head.innerHTML = proc.head.innerHTML;
+                document.body = proc.body;
+            });
+        </script>
+    </body>
+</html>
