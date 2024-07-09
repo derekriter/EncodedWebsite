@@ -15,7 +15,19 @@
                 catch(err) {console.log(err);}
             }
             
-            getFile("index.enc.html").then((raw) => {
+            /*
+            domain.com/             index.enc.html
+            domain.com/?t=sub/      sub/index.enc.html
+            */
+            
+            const params = new URLSearchParams(new URL(window.document.URL).search);
+            let target = "/";
+            
+            if(params.has("t")) target = params.get("t");
+            if(target.endsWith("/")) target += "index.enc.html";
+            else if(target.indexOf(".") === -1) target += "/index.enc.html";
+            
+            getFile(target).then((raw) => {
                 let file = atob(raw);
                 let parser = new DOMParser();
                 
@@ -23,6 +35,8 @@
                 document.head.outerHTML = proc.head.outerHTML;
                 document.head.innerHTML = proc.head.innerHTML;
                 document.body = proc.body;
+            }).catch((err) => {
+                console.log(err);
             });
         </script>
     </body>

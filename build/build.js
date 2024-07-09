@@ -50,8 +50,12 @@ function compileFile(file) {
 	let extension = path.extname(file);
 	let base = path.basename(file);
 	let filename = base.substring(0, base.lastIndexOf(extension)).concat(".enc").concat(extension);
+	let sub = path.dirname(file).replace(path.join(__dirname, "../src"), "");
 	
-	fse.writeFileSync(path.join(outDir, filename), btoa(data));
+	let newPath = path.join(outDir, sub);
+	
+	fse.mkdirSync(newPath, {recursive: true});
+	fse.writeFileSync(path.join(newPath, filename), btoa(data));
 }
 function insertLoader() {
 	fse.copyFileSync(path.join(__dirname, "loader.html"), path.join(outDir, "/index.html"));
