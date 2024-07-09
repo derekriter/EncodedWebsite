@@ -9,10 +9,10 @@ prepOutFolder();
 console.log("Building...");
 for(let i = 0; i < targets.length; i++) {
 	let file = path.join(__dirname, "../src", targets[i]);
-	const err = compileFile(file);
 	
-	if(err) console.log(`Failed to build ${file}`);
-	else console.log(`Built '${file}'`);
+	compileFile(file);
+	
+	console.log(`Built '${file}'`);
 }
 
 console.log("\nInserting loader...");

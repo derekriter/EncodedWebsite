@@ -32,9 +32,8 @@
                 let parser = new DOMParser();
                 
                 let proc = parser.parseFromString(file, "text/html");
-                document.head.outerHTML = proc.head.outerHTML;
                 document.head.innerHTML = proc.head.innerHTML;
-                document.body = proc.body;
+                document.body.innerHTML += proc.body.innerHTML;
             }).catch((err) => {
                 console.log(err);
             });
