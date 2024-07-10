@@ -1,8 +1,0 @@
-common/common.css
-
-gen/header.html
-gen/header.css
-
-index.html
-
-about/index.html

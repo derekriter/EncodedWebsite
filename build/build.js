@@ -1,44 +1,10 @@
 const fse = require("fs-extra");
 const path = require("path");
 
-const outDir = path.join(__dirname, "../out");
-const targets = getBuildFiles();
-
-prepOutFolder();
-
-console.log("Building...");
-for(let i = 0; i < targets.length; i++) {
-	let file = path.join(__dirname, "../src", targets[i]);
-	
-	let out = compileFile(file);
-	
-	console.log(`Built '${file}' -> '${out}'`);
-}
-
-console.log("\nInserting loader...");
-insertLoader();
-
-console.log("Inserting resources...");
-insertResources();
-
-console.log("Done");
-
 function getBuildFiles() {
 	try {
-		const data = fse.readFileSync(path.join(__dirname, "buildTargets.txt"), "utf8");
-		if(data.replace(/\s/gi, "") === "") { //remove all whitespace
-			abort("No build targets");
-		}
-		
-		let lines = data.split("\n");
-		
-		let targets = [];
-		for(let i = 0; i < lines.length; i++) {
-			let line = lines[i].trim();
-			
-			if(line === "") continue;
-			else targets.push(line);
-		}
+		let targets = fse.readdirSync(path.join(__dirname, "../src"), {recursive: true});
+		targets = targets.filter((e) => e.indexOf(".") !== -1);
 		
 		return targets;
 	}
@@ -80,3 +46,25 @@ function abort(err) {
 	console.log(err);
 	process.exit(1);
 }
+
+const outDir = path.join(__dirname, "../out");
+const targets = getBuildFiles();
+
+prepOutFolder();
+
+console.log("Building...");
+for(let i = 0; i < targets.length; i++) {
+	let file = path.join(__dirname, "../src", targets[i]);
+	
+	let out = compileFile(file);
+	
+	console.log(`Built '${file}' -> '${out}'`);
+}
+
+console.log("\nInserting loader...");
+insertLoader();
+
+console.log("Inserting resources...");
+insertResources();
+
+console.log("Done");
