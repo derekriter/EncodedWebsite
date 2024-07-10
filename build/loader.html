@@ -67,9 +67,28 @@
                     let end = req.indexOf("\n");
                     if(end !== -1) req = req.substring(0, end);
                     
-                    let filename = getEncodedName(req);
+                    let fileReq = req;
+                    let vars = {};
+                    if(req.indexOf(" ") !== -1) {
+                        fileReq = req.substring(0, req.indexOf(" "));
+                        
+                        let varReq = req.substring(req.indexOf(" ") + 1);
+                        let varMatches = varReq.match(/[^=\s]*=".*?"/g).concat(varReq.match(/[^=\s]*='.*?'/g));
+                        varMatches = varMatches.filter((e) => e !== null);
+                        
+                        for(let match of varMatches) {
+                            let frags = match.split("=");
+                            vars[frags[0]] = frags[1].substring(1, frags[1].length - 1);
+                        }
+                    }
+                    
+                    let filename = getEncodedName(fileReq);
                     try {
-                        content = atob(await getFile(filename));
+                        let content = atob(await getFile(filename));
+                        
+                        for(const [key, value] of Object.entries(vars)) {
+                            content = content.replaceAll(`{${key}}`, value);
+                        }
                         
                         templateCSS = templateCSS.concat(getReqCSS(content));
                         templateJS = templateJS.concat(getReqJS(content));
