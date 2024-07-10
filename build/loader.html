@@ -2,17 +2,81 @@
 <html>
     <head>
         <title>Loading...</title>
+        <link rel="shortcut icon" href="/logo.svg"/>
     </head>
     <body>
-        <script>
+        <script id="enc-loader">
             async function getFile(name) {
                 try {
                     const response = await fetch(name, {method: "GET"});
-                    if(!response.ok) throw new Error(`Response status: ${response.status}`);
+                    if(!response.ok) {
+                        throw new Error(`${response.status} File not found<br/>${response.url}`);
+                    }
                     
                     return response.text();
                 }
-                catch(err) {console.log(err);}
+                catch(err) {
+                    return Promise.reject(err); 
+                }
+            }
+            
+            async function attachCSS(html, doc) {
+                const prefix = "enc-loader-CSS:";
+                
+                if(html.indexOf(prefix) === -1) return;
+                
+                let requested = html.substring(html.indexOf(prefix) + prefix.length);
+                if(requested.indexOf("\n") !== -1) requested = requested.substring(0, requested.indexOf("\n"));
+                
+                let targets = requested.split(" ");
+                for(let t of targets) {
+                    if(t === "") continue;
+                    
+                    let filename = t;
+                    if(filename.indexOf(".") === -1) filename += ".enc";
+                    else filename = filename.substring(0, filename.indexOf(".")) + ".enc" + filename.substring(filename.indexOf("."));
+                    
+                    try {
+                        let resp = await getFile(filename);
+                        
+                        let elem = document.createElement("style");
+                        elem.innerHTML = atob(resp);
+                        
+                        doc.head.appendChild(elem);
+                    }
+                    catch(err) {
+                        return Promise.reject(err);
+                    }
+                };
+            }
+            async function attachJS(html, doc) {
+                const prefix = "enc-loader-JS:";
+                
+                if(html.indexOf(prefix) === -1) return;
+                
+                let requested = html.substring(html.indexOf(prefix) + prefix.length);
+                if(requested.indexOf("\n") !== -1) requested = requested.substring(0, requested.indexOf("\n"));
+                
+                let targets = requested.split(" ");
+                for(let t of targets) {
+                    if(t === "") continue;
+                    
+                    let filename = t;
+                    if(filename.indexOf(".") === -1) filename += ".enc";
+                    else filename = filename.substring(0, filename.indexOf(".")) + ".enc" + filename.substring(filename.indexOf("."));
+                    
+                    try {
+                        let resp = await getFile(filename);
+                        
+                        let elem = document.createElement("script");
+                        elem.innerHTML = atob(resp);
+                        
+                        doc.body.appendChild(elem);
+                    }
+                    catch(err) {
+                        return Promise.reject(err);
+                    }
+                };
             }
             
             /*
@@ -32,8 +96,14 @@
                 let parser = new DOMParser();
                 
                 let proc = parser.parseFromString(file, "text/html");
-                document.head.innerHTML = proc.head.innerHTML;
-                document.body.innerHTML += proc.body.innerHTML;
+                attachCSS(file, proc).then(() => {
+                    document.documentElement.innerHTML = proc.documentElement.innerHTML;
+                    attachJS(file, document).catch((err) => {
+                        return Promise.reject(err);
+                    });
+                }).catch((err) => {
+                    return Promise.reject(err);
+                });
             }).catch((err) => {
                 console.log(err);
             });
