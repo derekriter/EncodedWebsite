@@ -2,11 +2,11 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="16"
-   height="16"
-   viewBox="0 0 16 16"
+   width="16mm"
+   height="16mm"
+   viewBox="0 0 16 16.000001"
    version="1.1"
-   id="svg1"
+   id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    sodipodi:docname="logo.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -14,77 +14,126 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <sodipodi:namedview
-     id="namedview1"
+     id="namedview7"
      pagecolor="#ffffff"
      bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
+     borderopacity="1"
+     inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:document-units="px"
-     inkscape:zoom="51.662989"
-     inkscape:cx="8.2457482"
-     inkscape:cy="8.8457909"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="mm"
+     showgrid="false"
+     width="16mm"
+     units="mm"
+     showborder="true"
+     borderlayer="true"
+     inkscape:showpageshadow="false"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-global="true"
+     inkscape:snap-object-midpoints="true"
+     inkscape:snap-page="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="12.443434"
+     inkscape:cx="27.765647"
+     inkscape:cy="28.48892"
      inkscape:window-width="3440"
      inkscape:window-height="1366"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     inkscape:pageshadow="2"
-     showgrid="false" />
+     inkscape:current-layer="layer1" />
   <defs
-     id="defs1">
-    <inkscape:path-effect
-       effect="fillet_chamfer"
-       id="path-effect8"
-       is_visible="true"
-       lpeversion="1"
-       nodesatellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
-       radius="0"
-       unit="px"
-       method="auto"
-       mode="F"
-       chamfer_steps="1"
-       flexible="false"
-       use_knot_distance="true"
-       apply_no_radius="true"
-       apply_with_radius="true"
-       only_selected="false"
-       hide_knots="false"
-       satellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1" />
-  </defs>
+     id="defs2" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"
-     style="display:inline;opacity:1;mix-blend-mode:normal">
-    <path
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none;stroke-opacity:0"
-       id="rect8"
-       width="14.683777"
-       height="14.683777"
-       x="0.65811139"
-       y="0.65811133"
-       inkscape:path-effect="#path-effect8"
-       sodipodi:type="rect"
-       d="M 2.8307057,0.65811133 H 13.169294 c 1.203617,0 2.172594,0.96897707 2.172594,2.17259427 V 13.169294 c 0,1.203617 -0.968977,2.172594 -2.172594,2.172594 H 2.8307057 c -1.2036172,0 -2.17259431,-0.968977 -2.17259431,-2.172594 V 2.8307056 c 0,-1.2036172 0.96897711,-2.17259427 2.17259431,-2.17259427 z"
-       transform="matrix(1.0896379,0,0,1.0896379,-0.7171031,-0.71710308)"
-       ry="2.1725943" />
+     id="layer1">
+    <rect
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.188;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1"
+       width="7.5"
+       height="7.5"
+       x="0"
+       y="0"
+       rx="0"
+       ry="0" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9px;line-height:0.8;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;opacity:1;mix-blend-mode:normal;fill:#ffffff;fill-opacity:1;fill-rule:nonzero"
-       x="2.5100069"
-       y="7.6849999"
-       id="text"><tspan
+       style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.53425px;line-height:0.8;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono Ultra-Bold';fill:#eb4034;stroke-width:0.669184"
+       x="1.3465743"
+       y="6.500001"
+       id="text1"><tspan
          sodipodi:role="line"
-         id="tspan4"
-         x="2.5100069"
-         y="7.6849999">10</tspan><tspan
+         id="tspan5335"
+         style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono Ultra-Bold';stroke-width:0.669184"
+         x="1.3465743"
+         y="6.500001">1</tspan></text>
+    <rect
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.188;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect2"
+       width="7.5"
+       height="7.5"
+       x="8.5"
+       y="0"
+       rx="0"
+       ry="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.33333px;line-height:0.8;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono Ultra-Bold';fill:#fcba03;stroke-width:0.651339"
+       x="10.050001"
+       y="6.4266653"
+       id="text2"><tspan
          sodipodi:role="line"
-         x="2.5100069"
-         y="14.885"
-         id="tspan5">01</tspan></text>
+         id="tspan5335-5"
+         style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono Ultra-Bold';stroke-width:0.651339"
+         x="10.050001"
+         y="6.4266653">0</tspan></text>
+    <rect
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.188;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3"
+       width="7.5"
+       height="7.5"
+       x="0"
+       y="8.5"
+       rx="0"
+       ry="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.33333px;line-height:0.8;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono Ultra-Bold';fill:#32a852;stroke-width:0.651339"
+       x="1.5500009"
+       y="14.926665"
+       id="text3"><tspan
+         sodipodi:role="line"
+         id="tspan5335-5-3"
+         style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono Ultra-Bold';stroke-width:0.651339"
+         x="1.5500009"
+         y="14.926665">0</tspan></text>
+    <rect
+       style="fill:#1a1a1a;fill-opacity:1;stroke:none;stroke-width:0.188;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect4"
+       width="7.5"
+       height="7.5"
+       x="8.5"
+       y="8.5"
+       rx="0"
+       ry="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-size:7.53425px;line-height:0.8;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono Ultra-Bold';fill:#4287f5;stroke-width:0.669184"
+       x="9.8465748"
+       y="15.000001"
+       id="text4"><tspan
+         sodipodi:role="line"
+         id="tspan5335-5-9"
+         style="font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono Ultra-Bold';stroke-width:0.669184"
+         x="9.8465748"
+         y="15.000001">1</tspan></text>
   </g>
 </svg>
