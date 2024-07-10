@@ -9,16 +9,19 @@ prepOutFolder();
 console.log("Building...");
 for(let i = 0; i < targets.length; i++) {
 	let file = path.join(__dirname, "../src", targets[i]);
-	const err = compileFile(file);
 	
-	if(err) console.log(`Failed to build ${file}`);
-	else console.log(`Built '${file}'`);
+	let out = compileFile(file);
+	
+	console.log(`Built '${file}' -> '${out}'`);
 }
 
 console.log("\nInserting loader...");
 insertLoader();
 
-console.log("\nDone");
+console.log("Inserting resources...");
+insertResources();
+
+console.log("Done");
 
 function getBuildFiles() {
 	try {
@@ -50,11 +53,27 @@ function compileFile(file) {
 	let extension = path.extname(file);
 	let base = path.basename(file);
 	let filename = base.substring(0, base.lastIndexOf(extension)).concat(".enc").concat(extension);
+	let sub = path.dirname(file).replace(path.join(__dirname, "../src"), "");
 	
-	fse.writeFileSync(path.join(outDir, filename), btoa(data));
+	let newPath = path.join(outDir, sub);
+	
+	fse.mkdirSync(newPath, {recursive: true});
+	fse.writeFileSync(path.join(newPath, filename), btoa(data));
+	
+	return path.join(newPath, filename);
 }
 function insertLoader() {
-	fse.copyFileSync(path.join(__dirname, "loader.html"), path.join(outDir, "/index.html"));
+	try {
+		fse.accessSync(path.join(__dirname, "loader.html"), fse.constants.F_OK);
+		fse.copyFileSync(path.join(__dirname, "loader.html"), path.join(outDir, "/index.html"));
+	}
+	catch(err) {abort("Missing loader.html");}
+}
+function insertResources() {
+	try {
+		fse.copySync(path.join(__dirname, "../res"), path.join(__dirname, "../out"));
+	}
+	catch(err) {}
 }
 
 function abort(err) {
