@@ -37,7 +37,7 @@ function insertLoader() {
 }
 function insertResources() {
 	try {
-		fse.copySync(path.join(__dirname, "../res"), path.join(__dirname, "../out"));
+		fse.copySync(path.join(__dirname, "../res"), path.join(__dirname, "../out/res"));
 	}
 	catch(err) {}
 }
