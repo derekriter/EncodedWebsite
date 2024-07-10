@@ -93,7 +93,7 @@
                         templateCSS = templateCSS.concat(getReqCSS(content));
                         templateJS = templateJS.concat(getReqJS(content));
                         
-                        modded = modded.substring(0, start) + content + modded.substring(start + prefix.length + end + 1);
+                        modded = modded.substring(0, start) + `<!--${fileReq}-->` + content + modded.substring(start + prefix.length + end + 1);
                     }
                     catch(err) {
                         return Promise.reject(err);
@@ -120,6 +120,7 @@
                         let elem = document.createElement("style");
                         elem.innerHTML = atob(resp);
                         
+                        doc.head.appendChild(document.createComment(t));
                         doc.head.appendChild(elem);
                     }
                     catch(err) {
@@ -141,6 +142,7 @@
                         let elem = document.createElement("script");
                         elem.innerHTML = atob(resp);
                         
+                        doc.body.appendChild(document.createComment(t));
                         doc.body.appendChild(elem);
                     }
                     catch(err) {
