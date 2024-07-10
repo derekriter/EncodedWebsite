@@ -1,6 +1,8 @@
-util/gen.css
-util/header.css
+util/common.css
+
+gen/header.html
+gen/header.css
 
 index.html
 
-about.html
+about/index.html

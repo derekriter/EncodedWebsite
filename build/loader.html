@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Loading...</title>
-        <link rel="shortcut icon" href="/logo.svg"/>
+        <link rel="shortcut icon" href="/logo.svg">
     </head>
     <body>
         <script id="enc-loader">
@@ -10,7 +10,7 @@
                 try {
                     const response = await fetch(name, {method: "GET"});
                     if(!response.ok) {
-                        throw new Error(`${response.status} File not found<br/>${response.url}`);
+                        throw new Error(`${response.status} File not found\n${response.url}`);
                     }
                     
                     return response.text();
@@ -20,6 +20,49 @@
                 }
             }
             
+            function getEncodedName(name) {
+                if(name.indexOf(".") === -1) name += ".enc";
+                else name = name.substring(0, name.indexOf(".")) + ".enc" + name.substring(name.indexOf("."));
+                
+                return name;
+            }
+            async function insertTemplates(html) {
+                const prefix = "$$";
+                let modded = html;
+                let cache = {};
+                
+                let start;
+                let moddedStart = 0;
+                while((start = html.indexOf(prefix)) !== -1) {
+                    moddedStart += start;
+                    let req = html.substring(start + prefix.length);
+                    
+                    let end = req.indexOf("\n");
+                    if(end !== -1) req = req.substring(0, end);
+                    
+                    let content;
+                    if(cache.hasOwnProperty(req)) {
+                        content = cache[req];
+                    }
+                    else {
+                        let filename = getEncodedName(req);
+                        try {
+                            content = atob(await getFile(filename));
+                            cache[req] = content;
+                        }
+                        catch(err) {
+                            return Promise.reject(err);
+                        }
+                    }
+                    
+                    modded = modded.substring(0, moddedStart) + content + modded.substring(moddedStart + prefix.length + end + 1);
+                    
+                    moddedStart += content.length;
+                    html = html.substring(start + prefix.length + end + 1);
+                }
+                
+                return Promise.resolve(modded);
+            }
             async function attachCSS(html, doc) {
                 const prefix = "enc-loader-CSS:";
                 
@@ -32,9 +75,7 @@
                 for(let t of targets) {
                     if(t === "") continue;
                     
-                    let filename = t;
-                    if(filename.indexOf(".") === -1) filename += ".enc";
-                    else filename = filename.substring(0, filename.indexOf(".")) + ".enc" + filename.substring(filename.indexOf("."));
+                    let filename = getEncodedName(t);
                     
                     try {
                         let resp = await getFile(filename);
@@ -61,9 +102,7 @@
                 for(let t of targets) {
                     if(t === "") continue;
                     
-                    let filename = t;
-                    if(filename.indexOf(".") === -1) filename += ".enc";
-                    else filename = filename.substring(0, filename.indexOf(".")) + ".enc" + filename.substring(filename.indexOf("."));
+                    let filename = getEncodedName(t);
                     
                     try {
                         let resp = await getFile(filename);
@@ -93,12 +132,20 @@
             
             getFile(target).then((raw) => {
                 let file = atob(raw);
-                let parser = new DOMParser();
                 
-                let proc = parser.parseFromString(file, "text/html");
-                attachCSS(file, proc).then(() => {
-                    document.documentElement.innerHTML = proc.documentElement.innerHTML;
-                    attachJS(file, document).catch((err) => {
+                insertTemplates(file).then((modded) => {
+                    // console.log(modded);
+                    
+                    file = modded;
+                    let loaded = new DOMParser().parseFromString(file, "text/html");
+                    
+                    attachCSS(file, loaded).then(() => {
+                        document.documentElement.innerHTML = loaded.documentElement.innerHTML;
+                        
+                        attachJS(file, document).catch((err) => {
+                            return Promise.reject(err);
+                        });
+                    }).catch((err) => {
                         return Promise.reject(err);
                     });
                 }).catch((err) => {
