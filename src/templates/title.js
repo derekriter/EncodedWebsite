@@ -25,7 +25,7 @@ class TitleData {
 class TitleParticle {
     constructor(ctx) {
         this.ctx = ctx;
-        this.z = Math.random() * 0.3 + 0.1; //0.1 <= n < 0.4
+        this.z = Math.random() * 0.2 + 0.2; //0.2 <= n < 0.4
         this.pos = {
             x: Math.random() * (this.ctx.canvas.width + CONNECT_DIST * 2) - CONNECT_DIST,
             y: Math.random() * (this.ctx.canvas.height + CONNECT_DIST * 2) - CONNECT_DIST
