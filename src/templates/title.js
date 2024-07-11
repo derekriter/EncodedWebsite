@@ -8,7 +8,7 @@ class TitleData {
         this.ctx = ctx;
         this.particles = [];
         
-        for(let i = 0; i < (this.ctx.canvas.width + CONNECT_DIST * 2) * (this.ctx.canvas.height + CONNECT_DIST * 2) * 0.00015; i++) {
+        for(let i = 0; i < (this.ctx.canvas.width + CONNECT_DIST * 2) * (this.ctx.canvas.height + CONNECT_DIST * 2) * 0.0001; i++) {
             this.particles.push(new TitleParticle(this.ctx));
         }
     }
@@ -90,3 +90,14 @@ function render() {
 }
 
 requestAnimationFrame(() => {update(); render();});
+
+window.addEventListener("resize", () => {
+    for(let i = 0; i < targets.length; i++) {
+        let canvas = targets[i].canvas;
+        
+        canvas.width = parseInt(getComputedStyle(canvas).getPropertyValue("width").replace("px", ""));
+        canvas.height = parseInt(getComputedStyle(canvas).getPropertyValue("height").replace("px", ""));
+        
+        data[i] = new TitleData(targets[i]);
+    }
+})
