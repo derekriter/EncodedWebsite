@@ -20,9 +20,9 @@
     left: 50%;
     transform: translate(-50%, -50%);
     margin: 0;
-    font-size: 80px;
-    font-weight: 700;
-    text-align: center;
     
     color: var(--silver);
+    text-align: center;
+    font-size: 80px;
+    font-weight: 700;
 }
