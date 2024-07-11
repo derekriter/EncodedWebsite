@@ -2,76 +2,113 @@
 <html>
     <head>
         <title>Loading...</title>
-        <link rel="shortcut icon" href="/logo.svg">
+        <link rel="shortcut icon" href="/res/logo.svg">
     </head>
     <body>
         <script id="enc-loader">
+            let fileCache = {};
+            
             async function getFile(name) {
+                if(fileCache.hasOwnProperty(name)) return Promise.resolve(fileCache[name]);
+                
                 try {
                     const response = await fetch(name, {method: "GET"});
                     if(!response.ok) {
                         throw new Error(`${response.status} File not found\n${response.url}`);
                     }
                     
-                    return response.text();
+                    return response.text().then((content) => fileCache[name] = content);
                 }
                 catch(err) {
                     return Promise.reject(err); 
                 }
             }
-            
             function getEncodedName(name) {
                 if(name.indexOf(".") === -1) name += ".enc";
                 else name = name.substring(0, name.indexOf(".")) + ".enc" + name.substring(name.indexOf("."));
                 
                 return name;
             }
+            function getReqCSS(file) {
+                const prefix = "enc-loader-CSS:";
+                
+                if(file.indexOf(prefix) === -1) return;
+                
+                let req = file.substring(file.indexOf(prefix) + prefix.length);
+                if(req.indexOf("\n") !== -1) req = req.substring(0, req.indexOf("\n"));
+                
+                return req.split(" ").filter((val) => val.length > 0);
+            }
+            function getReqJS(file) {
+                const prefix = "enc-loader-JS:";
+                
+                if(file.indexOf(prefix) === -1) return;
+                
+                let req = file.substring(file.indexOf(prefix) + prefix.length);
+                if(req.indexOf("\n") !== -1) req = req.substring(0, req.indexOf("\n"));
+                
+                return req.split(" ").filter((val) => val.length > 0);
+            }
+            function rmDuplicates(arr) {
+                return [...new Set(arr)]; //convert to Set object (which doesnt allow duplicates) then convert back to array with spread syntax
+            }
+            
             async function insertTemplates(html) {
                 const prefix = "$$";
                 let modded = html;
-                let cache = {};
+                
+                let templateCSS = [];
+                let templateJS = [];
                 
                 let start;
-                let moddedStart = 0;
-                while((start = html.indexOf(prefix)) !== -1) {
-                    moddedStart += start;
-                    let req = html.substring(start + prefix.length);
+                while((start = modded.indexOf(prefix)) !== -1) {
+                    let req = modded.substring(start + prefix.length);
                     
                     let end = req.indexOf("\n");
                     if(end !== -1) req = req.substring(0, end);
                     
-                    let content;
-                    if(cache.hasOwnProperty(req)) {
-                        content = cache[req];
-                    }
-                    else {
-                        let filename = getEncodedName(req);
-                        try {
-                            content = atob(await getFile(filename));
-                            cache[req] = content;
-                        }
-                        catch(err) {
-                            return Promise.reject(err);
+                    let fileReq = req;
+                    let vars = {};
+                    if(req.indexOf(" ") !== -1) {
+                        fileReq = req.substring(0, req.indexOf(" "));
+                        
+                        let varReq = req.substring(req.indexOf(" ") + 1);
+                        let varMatches = varReq.match(/[^=\s]*=".*?"/g).concat(varReq.match(/[^=\s]*='.*?'/g));
+                        varMatches = varMatches.filter((e) => e !== null);
+                        
+                        for(let match of varMatches) {
+                            let frags = match.split("=");
+                            vars[frags[0]] = frags[1].substring(1, frags[1].length - 1);
                         }
                     }
                     
-                    modded = modded.substring(0, moddedStart) + content + modded.substring(moddedStart + prefix.length + end + 1);
-                    
-                    moddedStart += content.length;
-                    html = html.substring(start + prefix.length + end + 1);
+                    let filename = getEncodedName(fileReq);
+                    try {
+                        let content = atob(await getFile(filename));
+                        
+                        for(const [key, value] of Object.entries(vars)) {
+                            content = content.replaceAll(`{${key}}`, value);
+                        }
+                        
+                        templateCSS = templateCSS.concat(getReqCSS(content));
+                        templateJS = templateJS.concat(getReqJS(content));
+                        
+                        modded = modded.substring(0, start) + `<!--${fileReq}-->` + content + modded.substring(start + prefix.length + end + 1);
+                    }
+                    catch(err) {
+                        return Promise.reject(err);
+                    }
                 }
                 
-                return Promise.resolve(modded);
+                return Promise.resolve({
+                    html: modded,
+                    css: templateCSS,
+                    js: templateJS
+                });
             }
-            async function attachCSS(html, doc) {
-                const prefix = "enc-loader-CSS:";
+            async function attachCSS(html, doc, extra=[]) {
+                let targets = rmDuplicates(getReqCSS(html).concat(extra));
                 
-                if(html.indexOf(prefix) === -1) return;
-                
-                let requested = html.substring(html.indexOf(prefix) + prefix.length);
-                if(requested.indexOf("\n") !== -1) requested = requested.substring(0, requested.indexOf("\n"));
-                
-                let targets = requested.split(" ");
                 for(let t of targets) {
                     if(t === "") continue;
                     
@@ -83,6 +120,7 @@
                         let elem = document.createElement("style");
                         elem.innerHTML = atob(resp);
                         
+                        doc.head.appendChild(document.createComment(t));
                         doc.head.appendChild(elem);
                     }
                     catch(err) {
@@ -90,15 +128,9 @@
                     }
                 };
             }
-            async function attachJS(html, doc) {
-                const prefix = "enc-loader-JS:";
+            async function attachJS(html, doc, extra=[]) {
+                let targets = rmDuplicates(getReqJS(html).concat(extra));
                 
-                if(html.indexOf(prefix) === -1) return;
-                
-                let requested = html.substring(html.indexOf(prefix) + prefix.length);
-                if(requested.indexOf("\n") !== -1) requested = requested.substring(0, requested.indexOf("\n"));
-                
-                let targets = requested.split(" ");
                 for(let t of targets) {
                     if(t === "") continue;
                     
@@ -110,6 +142,7 @@
                         let elem = document.createElement("script");
                         elem.innerHTML = atob(resp);
                         
+                        doc.body.appendChild(document.createComment(t));
                         doc.body.appendChild(elem);
                     }
                     catch(err) {
@@ -119,30 +152,33 @@
             }
             
             /*
-            domain.com/             index.enc.html
-            domain.com/?t=sub/      sub/index.enc.html
+            domain.com                      index.enc.html
+            domain.com/                     index.enc.html
+            domain.com/?t=sub               sub/index.enc.html
+            domain.com/?t=sub/              sub/index.enc.html
+            domain.com/?t=sub/page2.html    sub/page2.enc.html
             */
             
             const params = new URLSearchParams(new URL(window.document.URL).search);
             let target = "/";
             
             if(params.has("t")) target = params.get("t");
-            if(target.endsWith("/")) target += "index.enc.html";
-            else if(target.indexOf(".") === -1) target += "/index.enc.html";
+            if(target.endsWith("/")) target += "index.html";
+            else if(target.indexOf(".") === -1) target += "/index.html";
+            
+            target = getEncodedName(target);
             
             getFile(target).then((raw) => {
                 let file = atob(raw);
                 
-                insertTemplates(file).then((modded) => {
-                    // console.log(modded);
-                    
-                    file = modded;
+                insertTemplates(file).then((data) => {
+                    file = data.html;
                     let loaded = new DOMParser().parseFromString(file, "text/html");
                     
-                    attachCSS(file, loaded).then(() => {
+                    attachCSS(file, loaded, data.css).then(() => {
                         document.documentElement.innerHTML = loaded.documentElement.innerHTML;
                         
-                        attachJS(file, document).catch((err) => {
+                        attachJS(file, document, data.js).catch((err) => {
                             return Promise.reject(err);
                         });
                     }).catch((err) => {

@@ -2,11 +2,10 @@ body {
     padding-top: 60px;
 }
 
-#header {
+.header {
     background: var(--prim);
     border: none;
-    border-bottom: solid 1px black;
-    color: black;
+    border-bottom: solid 1px var(--sec);
     text-transform: none;
     
     position: fixed;
@@ -21,7 +20,7 @@ body {
     justify-content: space-between;
     align-items: center;
 }
-#header #logo {
+.header > a {
     line-height: 0;
     display: flex;
     flex-direction: row;
@@ -31,11 +30,12 @@ body {
     color: inherit;
     text-decoration: inherit;
 }
-#header #logo img {
+.header > a > img {
     aspect-ratio: 1;
     width: 40px;
 }
-#header #logo h2 {
-    color: black;
+.header > a > h2 {
+    color: var(--sec);
     text-decoration: none;
+    font-weight: 400;
 }

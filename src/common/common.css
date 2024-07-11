@@ -8,17 +8,17 @@
 html {
     height: 100vh;
     
-    --prim: #F6851E;
-    --sec: #2357BC;
-    --gray: #eee;
+    --prim: #f6851e;
+    --sec: #242129;
+    --silver: #e1e0e4;
 }
 body {
-    background: var(--gray);
+    background: var(--silver);
 }
 
 .minLink {
-    --col1: var(--sec);
-    --col2: var(--prim);
+    --col1: black;
+    --col2: white;
     
     background: transparent;
     border-radius: 5px;
