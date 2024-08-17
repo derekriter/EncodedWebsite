@@ -2,14 +2,25 @@ const targets = [];
 const data = [];
 const CONNECT_DIST = 100;
 const SILVER = getComputedStyle(document.documentElement).getPropertyValue("--silver");
+const B64_CHARS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'];
 
 class TitleData {
-    constructor(ctx) {
+    constructor(ctx, headingEffect) {
         this.ctx = ctx;
         this.particles = [];
+        this.heading = ctx.canvas.nextElementSibling;
         
-        for(let i = 0; i < (this.ctx.canvas.width + CONNECT_DIST * 2) * (this.ctx.canvas.height + CONNECT_DIST * 2) * 0.00015; i++) {
+        for(let i = 0; i < (this.ctx.canvas.width + CONNECT_DIST * 2) * (this.ctx.canvas.height + CONNECT_DIST * 2) * 0.0001; i++) {
             this.particles.push(new TitleParticle(this.ctx));
+        }
+        
+        if(headingEffect) {
+            let originalStr = this.heading.innerHTML;
+            for(let i = 0; i < originalStr.length; i++) {
+                this.heading.innerHTML = this.heading.innerHTML.replaceAt(i, B64_CHARS[Math.floor(Math.random() * 64)]);
+            }
+            
+            this.renderHeadingChar(0, originalStr, 0);
         }
     }
     
@@ -20,6 +31,25 @@ class TitleData {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         
         this.particles.forEach((p) => p.render(this.particles));
+    }
+    renderHeadingChar(i, originalStr, depth) {
+        let isDone = Math.random() < 0.2 || depth >= 10;
+        
+        let newI, newDepth;
+        if(isDone) {
+            this.heading.innerHTML = this.heading.innerHTML.replaceAt(i, originalStr[i]);
+            
+            if(i === originalStr.length - 1) return;
+            newI = i + 1;
+            newDepth = 0;
+        }
+        else {
+            this.heading.innerHTML = this.heading.innerHTML.replaceAt(i, B64_CHARS[Math.floor(Math.random() * 64)]);
+            newI = i;
+            newDepth = depth + 1;
+        }
+        
+        setTimeout(() => this.renderHeadingChar(newI, originalStr, newDepth), 20);
     }
 }
 class TitleParticle {
@@ -73,7 +103,7 @@ for(const t of document.getElementsByClassName("titleBG")) {
     
     let ctx = t.getContext("2d");
     targets.push(ctx);
-    data.push(new TitleData(ctx));
+    data.push(new TitleData(ctx, true));
 }
 
 function update() {
@@ -90,3 +120,14 @@ function render() {
 }
 
 requestAnimationFrame(() => {update(); render();});
+
+window.addEventListener("resize", () => {
+    for(let i = 0; i < targets.length; i++) {
+        let canvas = targets[i].canvas;
+        
+        canvas.width = parseInt(getComputedStyle(canvas).getPropertyValue("width").replace("px", ""));
+        canvas.height = parseInt(getComputedStyle(canvas).getPropertyValue("height").replace("px", ""));
+        
+        data[i] = new TitleData(targets[i], false);
+    }
+})
